@@ -169,18 +169,30 @@ is a from-scratch OS.
 
 ---
 
-### ADR-0008 — Bootloader: hand-rolled vs. Limine protocol
-**Status:** Open — needs a decision before boot code is written
+### ADR-0008 — Bootloader: Limine, not hand-rolled
+**Status:** Decided
 
 **Context:** A hand-rolled UEFI bootloader is more educational and more
 "yours," but re-derives a lot of well-trodden GOP/ACPI/memory-map/
 `ExitBootServices` handling that's easy to get subtly wrong on unfamiliar
-real hardware. Building on the Limine boot protocol skips that, at the
-cost of one external dependency and slightly less "you wrote all of it."
+real hardware.
 
-**Decision:** *Pending.*
+**Decision:** Use the Limine boot protocol. It already provides exactly
+the boot-info structure `02-BOOT.md` describes (memory map, framebuffer,
+RSDP pointer, higher-half kernel mapping), is purpose-built for hobby/
+research kernels, and has been exercised across far more real UEFI
+implementations than a from-scratch bootloader would be before shipping.
 
-**Consequences:** Blocks `docs/06-ROADMAP.md` milestone M1 until resolved.
+**Alternatives considered:** Hand-rolled bootloader — rejected per
+`00-PHILOSOPHY.md`'s "boring technology for anything not the point of the
+exercise": firmware-quirk-wrangling teaches nothing that transfers to the
+capability-kernel work that's the actual point of this project, and is
+exactly the kind of debugging most likely to stall a hobby project before
+the interesting part starts.
+
+**Consequences:** Unblocks `docs/06-ROADMAP.md` milestone M1. Kernel entry
+point and boot-info parsing should target the Limine boot protocol
+directly; see `docs/11-GETTING-STARTED.md` for toolchain setup.
 
 ---
 

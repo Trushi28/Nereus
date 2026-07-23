@@ -7,28 +7,22 @@ see ADR-0007.
 
 ## 1. Firmware hand-off
 
-1. UEFI firmware loads a PE32+ image (`BOOTX64.EFI`) from the EFI System
-   Partition and calls its entry point with `EFI_HANDLE` +
-   `EFI_SYSTEM_TABLE*`, in a firmware-controlled environment (paging
-   already on, identity-mapped low 4 GiB typically, UEFI boot services
-   still callable).
-2. Bootloader queries the UEFI memory map (`GetMemoryMap`), the ACPI RSDP
-   (via the UEFI configuration table, looking for `EFI_ACPI_TABLE_GUID`),
-   and the framebuffer via the Graphics Output Protocol (GOP).
-3. Bootloader builds its own initial page tables (identity-map low memory
-   + higher-half-map the kernel image), loads the kernel ELF, and calls
-   `ExitBootServices` — after this call, UEFI boot services are gone for
-   good; only runtime services (e.g. for later reboot/shutdown) remain
+1. UEFI firmware loads the **Limine** bootloader from the EFI System
+   Partition (see ADR-0008 in `04-DECISIONS.md`). Limine queries the UEFI
+   memory map (`GetMemoryMap`), the ACPI RSDP (via the UEFI configuration
+   table, `EFI_ACPI_TABLE_GUID`), and the framebuffer via the Graphics
+   Output Protocol (GOP) — none of which this project re-derives.
+2. Limine builds its own initial page tables (identity-mapping low memory
+   and higher-half-mapping the kernel image), loads the kernel ELF, and
+   calls `ExitBootServices` — after this call, UEFI boot services are gone
+   for good; only runtime services (e.g. for later reboot/shutdown) remain
    callable, and the OS owns the memory map from here on.
-4. Bootloader jumps to the kernel entry point, passing a boot-info
-   structure: final memory map, ACPI RSDP pointer, framebuffer
-   description, and the physical address of any modules (initrd-equivalent).
-
-**Open decision**: hand-roll this bootloader stub, or build on the Limine
-boot protocol to avoid re-deriving well-trodden GOP/ACPI/`ExitBootServices`
-handling. Tracked in `04-DECISIONS.md` as an open item — writing your own is
-genuinely educational and in scope for "fun," but it is also the single
-largest source of firmware-quirk debugging on unfamiliar real hardware.
+3. Limine jumps to the kernel entry point per the **Limine Boot Protocol**,
+   passing a boot-info structure: final memory map, ACPI RSDP pointer,
+   framebuffer description, and the physical address of any modules
+   (initrd-equivalent). The kernel's entry point and boot-info parsing
+   target this protocol directly — see `docs/11-GETTING-STARTED.md` for
+   toolchain and template setup.
 
 ## 2. CPU bring-up to long mode (BSP)
 

@@ -57,6 +57,7 @@ or contained to a single restartable process.
 9. `docs/08-STORAGE-AND-INTEGRITY.md` — ransomware/malware resistance: capability-scoped storage, snapshots, honest limits
 10. `docs/09-PERSONALITY-SERVERS.md` — pluggable OS "personality" model; where Wine-equivalent compatibility actually lives
 11. `docs/10-USER-INTERFACE.md` — powerbox-style capability granting, secure input path, pluggable shell, anti-fingerprinting rendering
+12. `docs/11-GETTING-STARTED.md` — toolchain, emulation/debugging setup, real-hardware logistics, reference material, honest timeline
 
 ## Build status
 
@@ -65,4 +66,5 @@ first line of code is written against a spec instead of vibes. Planned
 toolchain (see roadmap M0): `x86_64-elf-gcc` cross-compiler, `qemu-system-x86_64`
 with OVMF (UEFI firmware for QEMU) as the fast inner-loop target, with real
 UEFI hardware boot tested from milestone M8 onward — not deferred to "someday."
-
+Bootloader is Limine (ADR-0008). Full setup checklist in
+`docs/11-GETTING-STARTED.md`.
