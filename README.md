@@ -66,8 +66,3 @@ toolchain (see roadmap M0): `x86_64-elf-gcc` cross-compiler, `qemu-system-x86_64
 with OVMF (UEFI firmware for QEMU) as the fast inner-loop target, with real
 UEFI hardware boot tested from milestone M8 onward — not deferred to "someday."
 
-## Open decisions (need your call before code starts)
-
-- **Bootloader**: hand-roll a minimal UEFI bootloader stub, or build on the
-  Limine boot protocol to skip re-deriving well-trodden UEFI/GOP/ACPI-handoff
-  code? Recorded as an open item in `docs/04-DECISIONS.md`.
